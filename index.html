@@ -1,612 +1,323 @@
-```html
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Andika Akbar & Sila Vebrianti | Our Memories</title>
+  <meta name="description" content="Tempat menyimpan foto, cerita, dan kenangan Andika Akbar dan Sila Vebrianti.">
+  <meta name="theme-color" content="#fff8f5">
 
-    <title>DEDE BOCIL VS MAS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <meta name="description"
-        content="Album kenangan Andika Akbar dan Sila Vebrianti">
-
-    <link rel="stylesheet" href="style.css">
-
-    <link rel="icon" type="image/jpeg" href="images/foto1.JPEG.jpeg">
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-    <div class="pixel-sparkle sparkle-one">✿</div>
-    <div class="pixel-sparkle sparkle-two">♡</div>
-    <div class="pixel-sparkle sparkle-three">✧</div>
+  <header class="navbar">
+    <a href="#beranda" class="logo">A. <span>&</span> S.</a>
 
-    <header class="navbar">
-        <a href="#beranda" class="logo">🎀 A & S ♡</a>
+    <nav class="nav-links" id="nav-links">
+      <a href="#beranda">Beranda</a>
+      <a href="#galeri">Galeri</a>
+      <a href="#cerita">Cerita Kita</a>
+    </nav>
 
-        <nav>
-            <a href="#beranda">Beranda</a>
-            <a href="#galeri">Galeri</a>
-            <a href="#cerita">Cerita Kita</a>
+    <button class="admin-button" id="open-login" type="button">
+      Login Admin
+    </button>
+  </header>
 
-            <button id="open-login" class="nav-admin">
-                ♡ Admin
-            </button>
-        </nav>
-    </header>
+  <main>
 
-    <main>
-        <!-- ==================== BERANDA ==================== -->
-        <section id="beranda" class="hero">
+    <section class="hero" id="beranda">
+      <div class="hero-decoration">♡</div>
+      <p class="eyebrow">A COLLECTION OF MEMORIES</p>
 
-            <div class="hero-decoration">
-                🌷 ✿ 🌸
-            </div>
+      <h1>Andika Akbar <span>&</span> Sila Vebrianti</h1>
 
-            <p class="eyebrow">
-                ♡ OUR LITTLE WORLD ♡
-            </p>
+      <p class="hero-text">
+        Sebuah ruang sederhana untuk menyimpan setiap momen yang berarti.
+      </p>
 
-            <h1>
-                DEDE BOCIL
-                <span class="heart">♥</span>
-                MAS
-            </h1>
+      <a href="#galeri" class="primary-button">
+        Jelajahi Kenangan <span>→</span>
+      </a>
 
-            <p class="hero-text">
-                Kenangan mas bareng dede.
-            </p>
+      <p class="hero-caption">Made of little moments and memories ♡</p>
 
-            <div class="pixel-message">
-                <span>🎀</span>
+      <div class="hero-bottom">
+        <span>EST. 2026</span>
+        <span>OUR LITTLE MEMORY SPACE</span>
+      </div>
+    </section>
 
-                <p>
-                    Every picture tells our story!
-                </p>
+    <section class="intro-section">
+      <div class="intro-content">
+        <p class="eyebrow">WELCOME TO OUR SPACE</p>
 
-                <span>🌷</span>
-            </div>
-
-            <a href="#galeri" class="pixel-button">
-                KENANGAN MAS DAN DEDE BOCIL ♡
-            </a>
-
-            <div class="hero-bottom">
-                ✿ ♡ ✿ ♡ ✿
-            </div>
-
-        </section>
-
-
-        <!-- ==================== GALERI ==================== -->
-        <section id="galeri" class="section">
-
-            <div class="section-heading">
-
-                <span class="section-icon">
-                    🌸
-                </span>
-
-                <div>
-                    <p class="eyebrow">
-                        OUR MEMORIES
-                    </p>
-
-                    <h2>
-                        Galeri Mas dan Dede
-                    </h2>
-
-                    <p>
-                        Setiap foto punya cerita tersendiri ♡
-                    </p>
-                </div>
-
-            </div>
-
-
-            <!-- FILTER -->
-            <div class="filters">
-
-                <button class="filter active" data-category="Semua">
-                    Semua
-                </button>
-
-                <button class="filter" data-category="Jalan-jalan">
-                    Jalan-jalan
-                </button>
-
-                <button class="filter" data-category="Spesial">
-                    Hari spesial
-                </button>
-
-                <button class="filter" data-category="Sehari-hari">
-                    Sehari-hari
-                </button>
-
-            </div>
-
-
-            <p id="gallery-status" class="status-text">
-                Memuat kenangan...
-            </p>
-
-
-            <!-- GALERI FOTO -->
-            <div id="gallery" class="gallery">
-
-                <!-- FOTO 1 -->
-                <article class="memory-card">
-
-                    <img
-                        src="images/foto2..jpeg"
-                        alt="Kenangan bersama"
-                    >
-
-                    <div class="memory-info">
-
-                        <p class="memory-category">
-                            Sehari-hari
-                        </p>
-
-                        <h3>
-                            Kenangan Bersama
-                        </h3>
-
-                        <p class="memory-date">
-                            Kenangan kita ♡
-                        </p>
-
-                        <p class="memory-note">
-                            Momen sederhana, tapi selalu punya tempat spesial di hati. ♡
-                        </p>
-
-                    </div>
-
-                </article>
-
-
-                <!-- FOTO 2 -->
-                <article class="memory-card">
-
-                    <img
-                        src="images/foto3.JPEG.jpeg"
-                        alt="Senyum Hari Ini"
-                    >
-
-                    <div class="memory-info">
-
-                        <p class="memory-category">
-                            Sehari-hari
-                        </p>
-
-                        <h3>
-                            Senyum Hari Ini
-                        </h3>
-
-                        <p class="memory-date">
-                            Our little moment ♡
-                        </p>
-
-                        <p class="memory-note">
-                            Senyum kecil hari itu ternyata menjadi salah satu kenangan yang paling indah. 🌸
-                        </p>
-
-                    </div>
-
-                </article>
-
-
-                <!-- FOTO 3 -->
-                <article class="memory-card">
-
-                    <img
-                        src="images/foto4.JPEG.jpeg"
-                        alt="Little Moment"
-                    >
-
-                    <div class="memory-info">
-
-                        <p class="memory-category">
-                            Sehari-hari
-                        </p>
-
-                        <h3>
-                            Little Moment
-                        </h3>
-
-                        <p class="memory-date">
-                            A precious memory ♡
-                        </p>
-
-                        <p class="memory-note">
-                            Tidak perlu momen yang sempurna, cukup momen yang ingin kita ingat kembali. ♡
-                        </p>
-
-                    </div>
-
-                </article>
-
-
-                <!-- FOTO 4 -->
-                <article class="memory-card">
-
-                    <img
-                        src="images/foto6.JPEG.jpeg"
-                        alt="Satu Momen yang Berarti"
-                    >
-
-                    <div class="memory-info">
-
-                        <p class="memory-category">
-                            Spesial
-                        </p>
-
-                        <h3>
-                            Satu Momen yang Berarti
-                        </h3>
-
-                        <p class="memory-date">
-                            Special moment ♡
-                        </p>
-
-                        <p class="memory-note">
-                            Beberapa kenangan tidak membutuhkan banyak kata untuk terasa begitu berarti. 💌
-                        </p>
-
-                    </div>
-
-                </article>
-
-
-                <!-- FOTO 5 -->
-                <article class="memory-card">
-
-                    <img
-                        src="images/foto7.JPEG.jpeg"
-                        alt="Our Little Adventure"
-                    >
-
-                    <div class="memory-info">
-
-                        <p class="memory-category">
-                            Jalan-jalan
-                        </p>
-
-                        <h3>
-                            Our Little Adventure
-                        </h3>
-
-                        <p class="memory-date">
-                            A beautiful day ♡
-                        </p>
-
-                        <p class="memory-note">
-                            Perjalanan kecil, cerita kecil, tetapi kenangannya akan tetap tinggal. 🌷
-                        </p>
-
-                    </div>
-
-                </article>
-
-
-                <!-- FOTO 6 -->
-                <article class="memory-card">
-
-                    <img
-                        src="images/foto8.JPEG.jpeg"
-                        alt="Happy Moment"
-                    >
-
-                    <div class="memory-info">
-
-                        <p class="memory-category">
-                            Spesial
-                        </p>
-
-                        <h3>
-                            Happy Moment
-                        </h3>
-
-                        <p class="memory-date">
-                            A moment to remember ♡
-                        </p>
-
-                        <p class="memory-note">
-                            Semoga momen seperti ini selalu menjadi bagian indah dari cerita kita. ♡
-                        </p>
-
-                    </div>
-
-                </article>
-
-            </div>
-
-        </section>
-
-
-        <!-- ==================== CERITA ==================== -->
-        <section id="cerita" class="story-section">
-
-            <div class="story-card">
-
-                <div class="story-decoration">
-                    💌 🌷 🎀
-                </div>
-
-                <p class="eyebrow">
-                    A LITTLE LOVE NOTE
-                </p>
-
-                <h2>
-                    Cerita Kita
-                </h2>
-
-                <p>
-                    Bukan tentang seberapa sempurna sebuah cerita,
-                    tetapi tentang momen-momen sederhana yang
-                    ingin kita kenang kembali.
-                </p>
-
-                <p class="pixel-signature">
-                    With love, Andika & Sila ♡
-                </p>
-
-            </div>
-
-        </section>
-
-    </main>
-
-
-    <!-- ==================== FOOTER ==================== -->
-    <footer>
+        <h2>Karena setiap momen layak untuk dikenang.</h2>
 
         <p>
-            🌸 WEBSITE KENANGAN MAS DAN DEDE 🌸
+          Tidak semua kenangan harus menjadi sesuatu yang besar.
+          Terkadang, hal-hal sederhana justru menjadi bagian yang
+          paling berarti.
+        </p>
+      </div>
+
+      <div class="intro-symbol">♡</div>
+    </section>
+
+    <section class="section gallery-section" id="galeri">
+
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">OUR PHOTO COLLECTION</p>
+          <h2>Galeri Kenangan</h2>
+          <p>Kumpulan momen yang ingin selalu dikenang.</p>
+        </div>
+
+        <div class="section-number">01 / GALLERY</div>
+      </div>
+
+      <div class="gallery-toolbar">
+        <div class="filters" aria-label="Filter kategori">
+
+          <button class="filter active" data-category="Semua" type="button">
+            Semua
+          </button>
+
+          <button class="filter" data-category="Jalan-jalan" type="button">
+            Jalan-jalan
+          </button>
+
+          <button class="filter" data-category="Spesial" type="button">
+            Spesial
+          </button>
+
+          <button class="filter" data-category="Sehari-hari" type="button">
+            Sehari-hari
+          </button>
+
+        </div>
+
+        <p id="gallery-status" class="status-text" aria-live="polite">
+          Menghubungkan ke galeri...
+        </p>
+      </div>
+
+      <div class="gallery" id="gallery"></div>
+
+      <div class="gallery-footer">
+        <p>Every picture holds a little story.</p>
+      </div>
+    </section>
+
+    <section class="story-section" id="cerita">
+      <div class="story-card">
+
+        <div class="story-top">
+          <span>02</span>
+          <span>A LITTLE STORY</span>
+        </div>
+
+        <p class="eyebrow">OUR STORY</p>
+
+        <h2>Cerita Kita</h2>
+
+        <p>
+          Ada banyak momen sederhana yang mungkin terlihat biasa,
+          tetapi selalu memiliki cerita tersendiri.
+
+          Website ini menjadi tempat untuk menyimpan foto, cerita,
+          dan kenangan agar bisa dilihat kembali kapan saja.
         </p>
 
-        <p class="footer-small">
-            ♡ Our memories, our little world ♡
+        <div class="story-divider">♡</div>
+
+        <p class="signature">
+          Andika Akbar <span>&</span> Sila Vebrianti
         </p>
 
-    </footer>
+      </div>
+    </section>
 
+    <section class="closing-section">
+      <p class="eyebrow">KEEP THE MEMORIES</p>
 
-    <!-- ==================== LOGIN ADMIN ==================== -->
-    <div id="login-modal" class="modal hidden">
+      <h2>
+        Some moments deserve<br>
+        to stay forever.
+      </h2>
 
-        <div class="modal-card">
+      <a href="#beranda" class="closing-link">
+        Kembali ke atas ↑
+      </a>
+    </section>
 
-            <button class="modal-close" data-close="login-modal">
-                ×
-            </button>
+  </main>
 
-            <div class="modal-icon">
-                🔐
-            </div>
+  <footer>
+    <div class="footer-content">
 
-            <p class="eyebrow">
-                SPECIAL ACCESS
-            </p>
+      <div>
+        <p class="footer-title">A. & S.</p>
+        <p>A little space filled with memories.</p>
+      </div>
 
-            <h2>
-                Login Admin
-            </h2>
-
-            <p>
-                Masuk untuk mengelola album kenangan.
-            </p>
-
-
-            <form id="login-form">
-
-                <label for="admin-email">
-                    Email admin
-                </label>
-
-                <input
-                    id="admin-email"
-                    type="email"
-                    placeholder="Email admin"
-                    autocomplete="username"
-                    required
-                >
-
-
-                <label for="admin-password">
-                    Password
-                </label>
-
-                <input
-                    id="admin-password"
-                    type="password"
-                    placeholder="Password"
-                    autocomplete="current-password"
-                    required
-                >
-
-
-                <button
-                    type="submit"
-                    class="pixel-button full-width"
-                >
-                    Login ♡
-                </button>
-
-            </form>
-
-            <p id="login-status" class="status-text"></p>
-
-        </div>
+      <div class="footer-right">
+        <p>ANDIKA AKBAR & SILA VEBRIANTI</p>
+        <p class="footer-small">© 2026 All memories reserved.</p>
+      </div>
 
     </div>
+  </footer>
 
+  <!-- LOGIN ADMIN -->
+  <div class="modal hidden" id="login-modal"
+       role="dialog" aria-modal="true"
+       aria-labelledby="login-title">
 
-    <!-- ==================== DASHBOARD ADMIN ==================== -->
-    <div id="admin-modal" class="modal hidden">
+    <div class="modal-card">
 
-        <div class="modal-card admin-card">
+      <button class="modal-close" type="button"
+              data-close="login-modal" aria-label="Tutup">
+        ×
+      </button>
 
-            <button class="modal-close" data-close="admin-modal">
-                ×
-            </button>
+      <p class="modal-symbol">♡</p>
+      <p class="eyebrow">PRIVATE ACCESS</p>
+      <h2 id="login-title">Login Admin</h2>
 
-            <div class="modal-icon">
-                🎀
-            </div>
+      <p class="modal-description">
+        Masuk menggunakan akun admin yang sudah terdaftar di Supabase.
+      </p>
 
-            <h2>
-                Dashboard Kenangan
-            </h2>
+      <form id="login-form">
 
-            <p>
-                Tambahkan foto baru ke album kalian.
-            </p>
+        <label for="admin-email">Email</label>
+        <input id="admin-email" type="email"
+               placeholder="Masukkan email"
+               autocomplete="username" required>
 
+        <label for="admin-password">Password</label>
+        <input id="admin-password" type="password"
+               placeholder="Masukkan password"
+               autocomplete="current-password" required>
 
-            <form id="upload-form">
+        <p id="login-status" class="form-status" aria-live="polite"></p>
 
-                <label for="photo-file">
-                    Pilih foto dari HP
-                </label>
+        <button class="primary-button full-button" type="submit">
+          Masuk ke Dashboard
+        </button>
 
-                <input
-                    id="photo-file"
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                    required
-                >
+      </form>
+    </div>
+  </div>
 
+  <!-- DASHBOARD ADMIN -->
+  <div class="modal hidden" id="admin-modal"
+       role="dialog" aria-modal="true"
+       aria-labelledby="admin-title">
 
-                <img
-                    id="image-preview"
-                    class="image-preview hidden"
-                    alt="Pratinjau foto yang akan diunggah"
-                >
+    <div class="modal-card admin-card">
 
+      <button class="modal-close" type="button"
+              data-close="admin-modal" aria-label="Tutup">
+        ×
+      </button>
 
-                <label for="photo-title">
-                    Judul kenangan
-                </label>
+      <p class="eyebrow">PHOTO MANAGEMENT</p>
+      <h2 id="admin-title">Dashboard Admin</h2>
 
-                <input
-                    id="photo-title"
-                    type="text"
-                    maxlength="100"
-                    placeholder="Contoh: Jalan-jalan bersama"
-                    required
-                >
+      <p class="modal-description">
+        Tambahkan foto baru ke galeri kenangan.
+      </p>
 
+      <form id="upload-form">
 
-                <label for="photo-date">
-                    Tanggal kenangan
-                </label>
+        <label for="photo-file">Pilih Foto</label>
+        <input id="photo-file" type="file"
+               accept="image/jpeg,image/png,image/webp" required>
 
-                <input
-                    id="photo-date"
-                    type="date"
-                    required
-                >
+        <img id="image-preview"
+             class="image-preview hidden"
+             alt="Pratinjau foto">
 
+        <label for="photo-title">Judul Foto</label>
+        <input id="photo-title" type="text"
+               maxlength="100"
+               placeholder="Contoh: Hari yang menyenangkan"
+               required>
 
-                <label for="photo-category">
-                    Kategori
-                </label>
+        <label for="photo-date">Tanggal Foto</label>
+        <input id="photo-date" type="date" required>
 
-                <select id="photo-category" required>
+        <label for="photo-category">Kategori</label>
+        <select id="photo-category" required>
+          <option value="Sehari-hari">Sehari-hari</option>
+          <option value="Jalan-jalan">Jalan-jalan</option>
+          <option value="Spesial">Spesial</option>
+        </select>
 
-                    <option value="Jalan-jalan">
-                        Jalan-jalan
-                    </option>
+        <label for="photo-caption">Cerita Foto</label>
+        <textarea id="photo-caption" maxlength="1000"
+                  placeholder="Tuliskan cerita singkat tentang foto ini..."></textarea>
 
-                    <option value="Spesial">
-                        Hari spesial
-                    </option>
+        <p id="upload-status" class="form-status" aria-live="polite"></p>
 
-                    <option value="Sehari-hari">
-                        Sehari-hari
-                    </option>
+        <button id="upload-button"
+                class="primary-button full-button"
+                type="submit">
+          Upload Foto
+        </button>
 
-                </select>
+      </form>
 
-
-                <label for="photo-caption">
-                    Cerita singkat
-                </label>
-
-                <textarea
-                    id="photo-caption"
-                    maxlength="1000"
-                    placeholder="Ceritakan kenangan ini..."
-                    rows="3"
-                ></textarea>
-
-
-                <button
-                    type="submit"
-                    id="upload-button"
-                    class="pixel-button full-width"
-                >
-                    🌸 Posting Foto
-                </button>
-
-            </form>
-
-
-            <p id="upload-status" class="status-text"></p>
-
-
-            <button
-                id="logout-button"
-                class="secondary-button full-width"
-            >
-                Keluar dari Admin
-            </button>
-
-        </div>
+      <button id="logout-button"
+              class="secondary-button"
+              type="button">
+        Keluar dari Admin
+      </button>
 
     </div>
+  </div>
 
+  <!-- DETAIL FOTO -->
+  <div class="modal hidden" id="photo-modal"
+       role="dialog" aria-modal="true"
+       aria-labelledby="detail-title">
 
-    <!-- ==================== DETAIL FOTO ==================== -->
-    <div id="photo-modal" class="modal hidden">
+    <div class="modal-card detail-card">
 
-        <div class="modal-card photo-detail-card">
+      <button class="modal-close" type="button"
+              data-close="photo-modal" aria-label="Tutup">
+        ×
+      </button>
 
-            <button class="modal-close" data-close="photo-modal">
-                ×
-            </button>
+      <img id="detail-image" src="" alt="Foto kenangan">
 
-            <img
-                id="detail-image"
-                alt="Foto kenangan"
-            >
+      <p class="eyebrow">A SAVED MEMORY</p>
 
-            <h2 id="detail-title"></h2>
+      <h2 id="detail-title"></h2>
 
-            <p
-                id="detail-date"
-                class="photo-date"
-            ></p>
+      <p id="detail-date" class="detail-date"></p>
 
-            <p id="detail-caption"></p>
+      <p id="detail-caption" class="detail-caption"></p>
 
-            <button
-                id="delete-photo"
-                class="delete-button hidden"
-            >
-                Hapus foto ini
-            </button>
-
-        </div>
+      <button id="delete-photo"
+              class="delete-button hidden"
+              type="button">
+        Hapus Foto
+      </button>
 
     </div>
+  </div>
 
-
-    <!-- JAVASCRIPT -->
-    <script src="script.js"></script>
+  <!-- JAVASCRIPT -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="script.js"></script>
 
 </body>
-
 </html>
