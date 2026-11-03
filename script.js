@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const SUPABASE_URL = "https://aaihvahqkzgnuamhsukw.supabase.co";
   
     // GANTI TEKS DI BAWAH DENGAN SB_PUBLISHABLE KEY MILIKMU
-    const SUPABASE_ANON_KEY = "TEMPELKAN_SB_PUBLISHABLE_KEY_DI_SINI";
+    const SUPABASE_ANON_KEY = "sb_publishable_cUO0qeGtcDjTersVaf8scA_UPTx4MJ-";
   
     const ADMIN_EMAILS = [
       "andikaakbar213@gmail.com",
