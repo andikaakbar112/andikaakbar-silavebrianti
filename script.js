@@ -1,426 +1,597 @@
-// =========================================
-// MAS & DEDE BOCIL
-// SCRIPT.JS
-// =========================================
-
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
 
     // =====================================
-    // 1. FILTER GALERI
+    // 1. KONFIGURASI SUPABASE
     // =====================================
-
-    const filterButtons = document.querySelectorAll(".filter");
-    const memoryCards = document.querySelectorAll(".memory-card");
-
-    filterButtons.forEach(button => {
-
-        button.addEventListener("click", () => {
-
-            const category = button.dataset.category;
-
-            // Tombol aktif
-            filterButtons.forEach(btn => {
-                btn.classList.remove("active");
-            });
-
-            button.classList.add("active");
-
-            // Filter foto
-            memoryCards.forEach(card => {
-
-                const cardCategory =
-                    card.dataset.category;
-
-                if (
-                    category === "Semua" ||
-                    cardCategory === category
-                ) {
-                    card.style.display = "block";
-
-                    setTimeout(() => {
-                        card.classList.add("show");
-                    }, 20);
-
-                } else {
-                    card.classList.remove("show");
-                    card.style.display = "none";
-                }
-
-            });
-
-        });
-
-    });
-
-
+  
+    const SUPABASE_URL = "https://aaihvahqkzgnuamhsukw.supabase.co";
+  
+    // GANTI TEKS DI BAWAH DENGAN SB_PUBLISHABLE KEY MILIKMU
+    const SUPABASE_ANON_KEY = "TEMPELKAN_SB_PUBLISHABLE_KEY_DI_SINI";
+  
+    const ADMIN_EMAILS = [
+      "andikaakbar213@gmail.com",
+      "silavebrianti27@gmail.com"
+    ];
+  
+    const BUCKET_NAME = "kenangan";
+    const TABLE_NAME = "photos";
+  
     // =====================================
-    // 2. KLIK FOTO → PESAN HANGAT
+    // 2. ELEMEN HTML
     // =====================================
-
-    memoryCards.forEach(card => {
-
-        card.addEventListener("click", event => {
-
-            // Jangan melakukan apa-apa kalau klik elemen
-            // yang memang merupakan tombol/link
-            if (
-                event.target.tagName === "BUTTON" ||
-                event.target.tagName === "A"
-            ) {
-                return;
-            }
-
-            card.classList.toggle("show-note");
-
-        });
-
-    });
-
-
+  
+    const $ = (id) => document.getElementById(id);
+  
+    const gallery = $("gallery");
+    const galleryStatus = $("gallery-status");
+  
+    const loginModal = $("login-modal");
+    const adminModal = $("admin-modal");
+    const photoModal = $("photo-modal");
+  
     // =====================================
-    // 3. ANIMASI FOTO SAAT SCROLL
+    // 3. PERIKSA SUPABASE
     // =====================================
-
-    const cards = document.querySelectorAll(
-        ".memory-card"
+  
+    if (!window.supabase) {
+      if (galleryStatus) {
+        galleryStatus.textContent =
+          "Library Supabase gagal dimuat. Periksa koneksi internet.";
+      }
+  
+      return;
+    }
+  
+    if (
+      !SUPABASE_URL.startsWith("https://") ||
+      SUPABASE_ANON_KEY.includes("TEMPELKAN")
+    ) {
+      if (galleryStatus) {
+        galleryStatus.textContent =
+          "Isi Project URL dan Publishable key di script.js terlebih dahulu.";
+      }
+  
+      console.error("Konfigurasi Supabase belum lengkap.");
+      return;
+    }
+  
+    const db = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
     );
-
-    const observer = new IntersectionObserver(
-        entries => {
-
-            entries.forEach(entry => {
-
-                if (entry.isIntersecting) {
-
-                    entry.target.classList.add(
-                        "scroll-visible"
-                    );
-
-                    observer.unobserve(
-                        entry.target
-                    );
-
-                }
-
-            });
-
-        },
+  
+    let currentUser = null;
+    let photos = [];
+    let selectedPhoto = null;
+    let activeCategory = "Semua";
+  
+    // =====================================
+    // 4. FUNGSI BANTU
+    // =====================================
+  
+    const show = (element) => {
+      element?.classList.remove("hidden");
+    };
+  
+    const hide = (element) => {
+      element?.classList.add("hidden");
+    };
+  
+    const setStatus = (id, message, isError = false) => {
+      const element = $(id);
+  
+      if (element) {
+        element.textContent = message;
+        element.style.color = isError ? "#b23b52" : "";
+      }
+    };
+  
+    const escapeHTML = (value = "") => {
+      return String(value).replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      }[char]));
+    };
+  
+    const formatDate = (date) => {
+      if (!date) return "Tanggal tidak tersedia";
+  
+      return new Date(`${date}T00:00:00`).toLocaleDateString(
+        "id-ID",
         {
-            threshold: 0.15
+          day: "numeric",
+          month: "long",
+          year: "numeric"
         }
-    );
-
-    cards.forEach(card => {
-        observer.observe(card);
-    });
-
-
+      );
+    };
+  
+    const isAdmin = () => {
+      return currentUser &&
+        ADMIN_EMAILS.includes(currentUser.email?.toLowerCase());
+    };
+  
     // =====================================
-    // 4. TOMBOL ADMIN
+    // 5. MEMUAT FOTO
     // =====================================
-
-    const openLogin =
-        document.getElementById("open-login");
-
-    const loginModal =
-        document.getElementById("login-modal");
-
-    const adminModal =
-        document.getElementById("admin-modal");
-
-    if (openLogin && loginModal) {
-
-        openLogin.addEventListener("click", () => {
-
-            loginModal.classList.remove("hidden");
-
+  
+    async function loadPhotos() {
+      if (!gallery || !galleryStatus) return;
+  
+      galleryStatus.textContent = "Memuat kenangan...";
+  
+      const { data, error } = await db
+        .from(TABLE_NAME)
+        .select("*")
+        .order("photo_date", {
+          ascending: false,
+          nullsFirst: false
+        })
+        .order("created_at", {
+          ascending: false
         });
-
+  
+      if (error) {
+        console.error(error);
+  
+        galleryStatus.textContent =
+          "Galeri belum bisa dimuat. Periksa koneksi dan izin SELECT Supabase.";
+  
+        gallery.innerHTML = `
+          <div class="empty-state">
+            Foto belum dapat ditampilkan. Coba muat ulang halaman.
+          </div>
+        `;
+  
+        return;
+      }
+  
+      photos = data || [];
+  
+      renderGallery();
     }
-
-
+  
     // =====================================
-    // 5. TUTUP MODAL
+    // 6. MENAMPILKAN GALERI
     // =====================================
-
-    const closeButtons =
-        document.querySelectorAll(".modal-close");
-
-    closeButtons.forEach(button => {
-
-        button.addEventListener("click", () => {
-
-            const modalId =
-                button.dataset.close;
-
-            const modal =
-                document.getElementById(modalId);
-
-            if (modal) {
-                modal.classList.add("hidden");
+  
+    function renderGallery() {
+      const visiblePhotos = photos.filter((photo) => {
+        return activeCategory === "Semua" ||
+          photo.category === activeCategory;
+      });
+  
+      gallery.innerHTML = "";
+  
+      galleryStatus.textContent =
+        `${visiblePhotos.length} kenangan`;
+  
+      if (!visiblePhotos.length) {
+        gallery.innerHTML = `
+          <div class="empty-state">
+            ${
+              photos.length
+                ? "Belum ada foto dalam kategori ini."
+                : "Belum ada foto. Login admin untuk menambahkan kenangan pertama."
             }
-
+          </div>
+        `;
+  
+        return;
+      }
+  
+      visiblePhotos.forEach((photo) => {
+        const { data } = db.storage
+          .from(BUCKET_NAME)
+          .getPublicUrl(photo.image_path);
+  
+        const card = document.createElement("article");
+  
+        card.className = "photo-card";
+        card.tabIndex = 0;
+  
+        card.innerHTML = `
+          <img
+            src="${escapeHTML(data.publicUrl)}"
+            alt="${escapeHTML(photo.title)}"
+            loading="lazy"
+          >
+  
+          <div class="photo-info">
+            <h3>${escapeHTML(photo.title)}</h3>
+  
+            <p>${escapeHTML(formatDate(photo.photo_date))}</p>
+  
+            <span class="photo-category">
+              ${escapeHTML(photo.category || "Kenangan")}
+            </span>
+          </div>
+        `;
+  
+        card.addEventListener("click", () => {
+          openPhoto(photo);
         });
-
-    });
-
-
-    // =====================================
-    // 6. TUTUP MODAL KETIKA KLIK LUAR
-    // =====================================
-
-    document.querySelectorAll(".modal").forEach(modal => {
-
-        modal.addEventListener("click", event => {
-
-            if (event.target === modal) {
-
-                modal.classList.add("hidden");
-
-            }
-
+  
+        card.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            openPhoto(photo);
+          }
         });
-
+  
+        gallery.appendChild(card);
+      });
+    }
+  
+    // =====================================
+    // 7. DETAIL FOTO
+    // =====================================
+  
+    function openPhoto(photo) {
+      selectedPhoto = photo;
+  
+      const { data } = db.storage
+        .from(BUCKET_NAME)
+        .getPublicUrl(photo.image_path);
+  
+      $("detail-image").src = data.publicUrl;
+      $("detail-title").textContent = photo.title || "";
+      $("detail-date").textContent = formatDate(photo.photo_date);
+  
+      $("detail-caption").textContent =
+        photo.description || "Tidak ada cerita untuk foto ini.";
+  
+      if (isAdmin()) {
+        show($("delete-photo"));
+      } else {
+        hide($("delete-photo"));
+      }
+  
+      show(photoModal);
+    }
+  
+    // =====================================
+    // 8. TOMBOL LOGIN ADMIN
+    // =====================================
+  
+    $("open-login")?.addEventListener("click", () => {
+      setStatus("login-status", "");
+      show(loginModal);
     });
-
-
+  
     // =====================================
-    // 7. TUTUP DENGAN ESC
+    // 9. TUTUP MODAL
     // =====================================
-
-    document.addEventListener("keydown", event => {
-
-        if (event.key === "Escape") {
-
-            document.querySelectorAll(".modal")
-                .forEach(modal => {
-
-                    modal.classList.add("hidden");
-
-                });
-
+  
+    document.querySelectorAll("[data-close]").forEach((button) => {
+      button.addEventListener("click", () => {
+        hide($(button.dataset.close));
+      });
+    });
+  
+    [loginModal, adminModal, photoModal].forEach((modal) => {
+      modal?.addEventListener("click", (event) => {
+        if (event.target === modal) {
+          hide(modal);
         }
-
+      });
     });
-
-
-    // =====================================
-    // 8. PREVIEW FOTO SAAT UPLOAD
-    // =====================================
-
-    const photoFile =
-        document.getElementById("photo-file");
-
-    const imagePreview =
-        document.getElementById("image-preview");
-
-    if (photoFile && imagePreview) {
-
-        photoFile.addEventListener("change", () => {
-
-            const file =
-                photoFile.files[0];
-
-            if (!file) {
-                imagePreview.classList.add("hidden");
-                return;
-            }
-
-            const imageURL =
-                URL.createObjectURL(file);
-
-            imagePreview.src = imageURL;
-
-            imagePreview.classList.remove(
-                "hidden"
-            );
-
-        });
-
-    }
-
-
-    // =====================================
-    // 9. DETAIL FOTO
-    // =====================================
-
-    const detailImage =
-        document.getElementById("detail-image");
-
-    const detailTitle =
-        document.getElementById("detail-title");
-
-    const detailDate =
-        document.getElementById("detail-date");
-
-    const detailCaption =
-        document.getElementById("detail-caption");
-
-    const photoModal =
-        document.getElementById("photo-modal");
-
-
-    memoryCards.forEach(card => {
-
-        const image =
-            card.querySelector("img");
-
-        if (!image) return;
-
-        image.addEventListener("dblclick", event => {
-
-            event.stopPropagation();
-
-            if (!photoModal) return;
-
-            if (detailImage) {
-                detailImage.src = image.src;
-            }
-
-            const title =
-                card.querySelector("h3");
-
-            const date =
-                card.querySelector(".memory-date");
-
-            const note =
-                card.querySelector(".memory-note");
-
-
-            if (detailTitle && title) {
-                detailTitle.textContent =
-                    title.textContent;
-            }
-
-            if (detailDate && date) {
-                detailDate.textContent =
-                    date.textContent;
-            }
-
-            if (detailCaption && note) {
-                detailCaption.textContent =
-                    note.textContent;
-            }
-
-            photoModal.classList.remove(
-                "hidden"
-            );
-
-        });
-
+  
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        [loginModal, adminModal, photoModal].forEach(hide);
+      }
     });
-
-
+  
     // =====================================
-    // 10. TOMBOL LOGOUT
+    // 10. FILTER KATEGORI
     // =====================================
-
-    const logoutButton =
-        document.getElementById("logout-button");
-
-    if (logoutButton) {
-
-        logoutButton.addEventListener("click", () => {
-
-            if (adminModal) {
-                adminModal.classList.add(
-                    "hidden"
-                );
-            }
-
-            alert("Kamu sudah keluar dari Admin ♡");
-
+  
+    document.querySelectorAll(".filter").forEach((button) => {
+      button.addEventListener("click", () => {
+  
+        document.querySelectorAll(".filter").forEach((item) => {
+          item.classList.remove("active");
         });
-
-    }
-
-
-    // =====================================
-    // 11. EFEK KLIK HATI
-    // =====================================
-
-    memoryCards.forEach(card => {
-
-        card.addEventListener("click", event => {
-
-            const heart =
-                document.createElement("span");
-
-            heart.textContent = "♡";
-
-            heart.className =
-                "click-heart";
-
-            heart.style.left =
-                event.clientX + "px";
-
-            heart.style.top =
-                event.clientY + "px";
-
-            document.body.appendChild(heart);
-
-            setTimeout(() => {
-                heart.remove();
-            }, 900);
-
-        });
-
+  
+        button.classList.add("active");
+  
+        activeCategory =
+          button.dataset.category || "Semua";
+  
+        renderGallery();
+      });
     });
-
-
+  
     // =====================================
-    // 12. TOMBOL KEMBALI KE ATAS
+    // 11. LOGIN SUPABASE
     // =====================================
-
-    let backToTop =
-        document.querySelector(".back-to-top");
-
-    if (!backToTop) {
-
-        backToTop =
-            document.createElement("button");
-
-        backToTop.className =
-            "back-to-top";
-
-        backToTop.innerHTML = "↑";
-
-        document.body.appendChild(
-            backToTop
+  
+    $("login-form")?.addEventListener("submit", async (event) => {
+      event.preventDefault();
+  
+      setStatus("login-status", "Memeriksa akun...");
+  
+      const email = $("admin-email").value.trim().toLowerCase();
+      const password = $("admin-password").value;
+  
+      if (!ADMIN_EMAILS.includes(email)) {
+        setStatus(
+          "login-status",
+          "Email ini tidak terdaftar sebagai admin.",
+          true
         );
-
-    }
-
-    window.addEventListener("scroll", () => {
-
-        if (window.scrollY > 500) {
-
-            backToTop.classList.add("show");
-
-        } else {
-
-            backToTop.classList.remove("show");
-
-        }
-
+  
+        return;
+      }
+  
+      const { data, error } = await db.auth.signInWithPassword({
+        email,
+        password
+      });
+  
+      if (error) {
+        setStatus("login-status", error.message, true);
+        return;
+      }
+  
+      currentUser = data.user;
+  
+      hide(loginModal);
+      show(adminModal);
+  
+      $("login-form").reset();
+  
+      await loadPhotos();
     });
-
-    backToTop.addEventListener("click", () => {
-
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
+  
+    // =====================================
+    // 12. LOGOUT ADMIN
+    // =====================================
+  
+    $("logout-button")?.addEventListener("click", async () => {
+      const { error } = await db.auth.signOut();
+  
+      if (error) {
+        setStatus("upload-status", error.message, true);
+        return;
+      }
+  
+      currentUser = null;
+  
+      hide(adminModal);
+      hide(photoModal);
+  
+      renderGallery();
+    });
+  
+    // =====================================
+    // 13. PREVIEW FOTO
+    // =====================================
+  
+    $("photo-file")?.addEventListener("change", () => {
+      const file = $("photo-file").files?.[0];
+      const preview = $("image-preview");
+  
+      if (!file) {
+        preview.removeAttribute("src");
+        hide(preview);
+        return;
+      }
+  
+      if (
+        !["image/jpeg", "image/png", "image/webp"].includes(file.type)
+      ) {
+        setStatus(
+          "upload-status",
+          "Gunakan JPG, PNG, atau WebP.",
+          true
+        );
+  
+        $("photo-file").value = "";
+        hide(preview);
+  
+        return;
+      }
+  
+      if (file.size > 8 * 1024 * 1024) {
+        setStatus(
+          "upload-status",
+          "Ukuran foto maksimal 8 MB.",
+          true
+        );
+  
+        $("photo-file").value = "";
+        hide(preview);
+  
+        return;
+      }
+  
+      preview.src = URL.createObjectURL(file);
+  
+      show(preview);
+  
+      setStatus("upload-status", "");
+    });
+  
+    // =====================================
+    // 14. UPLOAD FOTO
+    // =====================================
+  
+    $("upload-form")?.addEventListener("submit", async (event) => {
+      event.preventDefault();
+  
+      if (!isAdmin()) {
+        setStatus(
+          "upload-status",
+          "Silakan login menggunakan akun admin.",
+          true
+        );
+  
+        return;
+      }
+  
+      const file = $("photo-file").files?.[0];
+  
+      if (!file) {
+        setStatus(
+          "upload-status",
+          "Pilih foto terlebih dahulu.",
+          true
+        );
+  
+        return;
+      }
+  
+      const button = $("upload-button");
+  
+      button.disabled = true;
+      button.textContent = "Mengunggah...";
+  
+      setStatus("upload-status", "Sedang mengunggah foto...");
+  
+      const safeName = file.name
+        .toLowerCase()
+        .replace(/[^a-z0-9._-]/g, "-");
+  
+      const imagePath = `${Date.now()}-${safeName}`;
+  
+      const uploadResult = await db.storage
+        .from(BUCKET_NAME)
+        .upload(imagePath, file, {
+          cacheControl: "3600",
+          upsert: false,
+          contentType: file.type
         });
-
+  
+      if (uploadResult.error) {
+        setStatus(
+          "upload-status",
+          uploadResult.error.message,
+          true
+        );
+  
+        button.disabled = false;
+        button.textContent = "Upload Foto";
+  
+        return;
+      }
+  
+      const insertResult = await db
+        .from(TABLE_NAME)
+        .insert({
+          title: $("photo-title").value.trim(),
+          description: $("photo-caption").value.trim() || null,
+          image_path: imagePath,
+          category: $("photo-category").value,
+          photo_date: $("photo-date").value,
+          created_by: currentUser.id
+        });
+  
+      if (insertResult.error) {
+        await db.storage
+          .from(BUCKET_NAME)
+          .remove([imagePath]);
+  
+        setStatus(
+          "upload-status",
+          insertResult.error.message,
+          true
+        );
+  
+      } else {
+        $("upload-form").reset();
+  
+        hide($("image-preview"));
+  
+        setStatus(
+          "upload-status",
+          "Foto berhasil ditambahkan."
+        );
+  
+        await loadPhotos();
+      }
+  
+      button.disabled = false;
+      button.textContent = "Upload Foto";
     });
-
-
+  
     // =====================================
-    // SELESAI
+    // 15. HAPUS FOTO
     // =====================================
-
-    console.log(
-        "♡ Web Andika Akbar & Sila Vebrianti aktif ♡"
-    );
-
-});
+  
+    $("delete-photo")?.addEventListener("click", async () => {
+      if (!isAdmin() || !selectedPhoto) return;
+  
+      if (!confirm("Yakin ingin menghapus foto ini?")) {
+        return;
+      }
+  
+      const button = $("delete-photo");
+  
+      button.disabled = true;
+  
+      const storageResult = await db.storage
+        .from(BUCKET_NAME)
+        .remove([selectedPhoto.image_path]);
+  
+      if (storageResult.error) {
+        setStatus(
+          "upload-status",
+          storageResult.error.message,
+          true
+        );
+  
+        button.disabled = false;
+        return;
+      }
+  
+      const rowResult = await db
+        .from(TABLE_NAME)
+        .delete()
+        .eq("id", selectedPhoto.id);
+  
+      if (rowResult.error) {
+        setStatus(
+          "upload-status",
+          rowResult.error.message,
+          true
+        );
+  
+        button.disabled = false;
+        return;
+      }
+  
+      selectedPhoto = null;
+  
+      hide(photoModal);
+  
+      button.disabled = false;
+  
+      await loadPhotos();
+    });
+  
+    // =====================================
+    // 16. CEK SESSION LOGIN
+    // =====================================
+  
+    const { data: sessionData } = await db.auth.getSession();
+  
+    currentUser = sessionData.session?.user || null;
+  
+    if (currentUser && !isAdmin()) {
+      await db.auth.signOut();
+      currentUser = null;
+    }
+  
+    // =====================================
+    // 17. TAMPILKAN GALERI
+    // =====================================
+  
+    await loadPhotos();
+  
+  });
