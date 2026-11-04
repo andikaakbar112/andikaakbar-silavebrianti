@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       "silavebrianti27@gmail.com"
     ];
   
-    const BUCKET_NAME = "kenangan";
+    const BUCKET_NAME = "Kenangan";
     const TABLE_NAME = "photos";
   
     // =====================================
