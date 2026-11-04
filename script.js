@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const SUPABASE_URL = "https://aaihvahqkzgnuamhsukw.supabase.co";
   
     // GANTI TEKS DI BAWAH DENGAN SB_PUBLISHABLE KEY MILIKMU
-    const SUPABASE_ANON_KEY = "sb_publishable_cUO0qeGtcDjTersVaf8scA_UPTx4MJ-";
+    const SUPABASE_ANON_KEY = "sb_publishable_JaRHBxY1_vlkqGkP67ZjVQ_3qVFgBcX-";
   
     const ADMIN_EMAILS = [
       "andikaakbar213@gmail.com",
@@ -29,37 +29,40 @@ document.addEventListener("DOMContentLoaded", async () => {
     const loginModal = $("login-modal");
     const adminModal = $("admin-modal");
     const photoModal = $("photo-modal");
-  
-    // =====================================
-    // 3. PERIKSA SUPABASE
-    // =====================================
-  
-    if (!window.supabase) {
-      if (galleryStatus) {
-        galleryStatus.textContent =
+ // =====================================
+// 3. PERIKSA SUPABASE
+// =====================================
+
+if (!window.supabase) {
+  if (galleryStatus) {
+      galleryStatus.textContent =
           "Library Supabase gagal dimuat. Periksa koneksi internet.";
-      }
-  
-      return;
-    }
-  
-    if (
-      !SUPABASE_URL.startsWith("https://") ||
-      SUPABASE_ANON_KEY.includes("TEMPELKAN")
-    ) {
-      if (galleryStatus) {
-        galleryStatus.textContent =
-          "Isi Project URL dan Publishable key di script.js terlebih dahulu.";
-      }
-  
-      console.error("Konfigurasi Supabase belum lengkap.");
-      return;
-    }
+  }
+
+  console.error("Supabase library tidak ditemukan.");
+  return;
+}
+
+if (
+  !SUPABASE_URL.startsWith("https://aaihvahqkzgnuamhsukw.supabase.co") ||
+  !SUPABASE_ANON_KEY.startsWith("sb_publishable_JaRHBxY1_vlkqGkP67ZjVQ_3qVFgBcX-")
+) {
+  if (galleryStatus) {
+      galleryStatus.textContent =
+          "Periksa Project URL dan Publishable Key Supabase.";
+  }
+
+  console.error("Konfigurasi Supabase belum benar.");
+  return;
+}
   
     const db = window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
-    );
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+      );
+      
+      console.log("Supabase berhasil diinisialisasi.");
+      console.log("Project URL:", SUPABASE_URL);
   
     let currentUser = null;
     let photos = [];
