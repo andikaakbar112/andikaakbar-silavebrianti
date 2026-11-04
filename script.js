@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const SUPABASE_URL = "https://aaihvahqkzgnuamhsukw.supabase.co";
   
     // GANTI TEKS DI BAWAH DENGAN SB_PUBLISHABLE KEY MILIKMU
-    const SUPABASE_ANON_KEY = "sb_publishable_JaRHBxY1_vlkqGkP67ZjVQ_3qVFgBcX-";
+    const SUPABASE_ANON_KEY = "sb_publishable_JaRHBxY1_vlkqGkP67ZjVQ_3qVFgBcX";
   
     const ADMIN_EMAILS = [
       "andikaakbar213@gmail.com",
@@ -45,7 +45,7 @@ if (!window.supabase) {
 
 if (
   !SUPABASE_URL.startsWith("https://aaihvahqkzgnuamhsukw.supabase.co") ||
-  !SUPABASE_ANON_KEY.startsWith("sb_publishable_JaRHBxY1_vlkqGkP67ZjVQ_3qVFgBcX-")
+  !SUPABASE_ANON_KEY.startsWith("sb_publishable_JaRHBxY1_vlkqGkP67ZjVQ_3qVFgBcX")
 ) {
   if (galleryStatus) {
       galleryStatus.textContent =
